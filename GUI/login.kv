@@ -1,0 +1,43 @@
+#: import SwapTransition kivy.uix.screenmanager.SwapTransition
+
+ScreenManagement:
+    transition: SwapTransition()
+    LoginScreen:
+    MenuScreen:
+
+
+<GridLayout>:
+    cols:2
+    rows:2
+
+<Button>:
+    size_hint: 1,1
+    color: 0,1,0,1
+
+<LoginScreen>:
+    name: "login"
+    txt_input: txt_input
+    GridLayout:
+        Button:
+            text: 'Hi'
+            on_release: app.root.current = 'menu'
+
+        Button:
+            id: button2
+            text:'press me'
+            on_press: root.check_status(txt_input.text)
+        TextInput:
+            id: txt_input
+            text: ""
+
+        Button:
+            text: 'como'
+
+<MenuScreen>:
+    name: 'menu'
+    GridLayout:
+        Button:
+            text: 'Menu'
+            on_release: app.root.current = 'login'
+
+

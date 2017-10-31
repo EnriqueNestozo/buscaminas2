@@ -1,0 +1,74 @@
+# Example for an internationalized Kivy app
+# Copyright (C) 2013 Mathieu Virbel
+# This file is distributed under the same license as the Kivy package.
+# Mathieu Virbel <mat@kivy.org>, 2013
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-01 15:36+0200\n"
+"PO-Revision-Date: 2017-10-30 10:55-0600\n"
+"Last-Translator: Mathieu Virbel <mat@kivy.org>\n"
+"Language-Team: Mathieu Virbel <mat@kivy.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.4\n"
+
+#: buscaminas.kv:34 buscaminas.kv:156
+msgid "Sign Up"
+msgstr ""
+
+#: buscaminas.kv:39
+msgid "Sign In"
+msgstr ""
+
+#: buscaminas.kv:44
+msgid "Choice language"
+msgstr ""
+
+#: buscaminas.kv:71 buscaminas.kv:120
+msgid "User name"
+msgstr ""
+
+#: buscaminas.kv:84 buscaminas.kv:132
+msgid "Password"
+msgstr ""
+
+#: buscaminas.kv:98
+msgid "Let's play!"
+msgstr ""
+
+#: buscaminas.kv:105 buscaminas.kv:160 buscaminas.kv:210
+msgid "Go back"
+msgstr ""
+
+#: buscaminas.kv:144
+msgid "Repeat password"
+msgstr ""
+
+#: buscaminas.kv:174
+msgid "Play!"
+msgstr ""
+
+#: lang.kv:178
+msgid "Ranking"
+msgstr ""
+
+#: lang.kv:182
+msgid "Profile"
+msgstr ""
+
+#: lang.kv:186
+msgid "Sign off"
+msgstr ""
+
+#: lang.kv:199
+msgid "English"
+msgstr ""
+
+#: lang.kv:204
+msgid "Spanish"
+msgstr ""
