@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Buscaminas</title>
+	<link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  	<link rel="stylesheet" href="./styles.css">
+</head>
+<body background="./imagenes/fondo1_1.jpg">
+	<button id="regresarBtn">Regresar</button>
+	<img src="./imagenes/mina2.png" id="fondo">
+	<div id="registro" class="container" style="text-align: center;">
+		<input type="text" placeholder="Nombre de usuario" class="form-control" id="nombreUsuario" maxlength="10">
+	    <input type="password" placeholder="Contrasena" class="form-control" id="Password1" maxlength="10">
+	    <input type="password" placeholder="Repite contrasena" class="form-control" id="Password2" maxlength="10">
+	    <button id="signUpBtn">Registrar</button>
+	</div>
+	<script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+	<script>require('./registro.js')</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+button{
+	margin-bottom: 20px;
+	font-size: 20px;
+	padding: 15px 32px;
+	width: 300px;
+	color: white;
+	background-color: #ff1a1a;
+	border: none;
+	border-radius: 10px;
+}
+
+button:hover {
+    background-color: #e60000;
+}
+
+#fondo{
+	display: block;
+	margin: auto;
+	margin-top: 25px;
+	margin-bottom: 35px;
+}
