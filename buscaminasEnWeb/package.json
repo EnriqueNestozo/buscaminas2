@@ -1,0 +1,18 @@
+{
+  "name": "buscaminas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socketio": "^1.0.0",
+    "zeromq": "^4.6.0",
+    "zerorpc": "^0.9.7",
+    "zmq": "^2.15.3"
+  }
+}
