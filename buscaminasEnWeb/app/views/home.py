@@ -89,6 +89,13 @@ def disconnect():
 			socketio.emit('usersConnected',listaConectados)
 			break
 
+@socketio.on('peticionDePartida')
+def message(data):
+	for name,socketid in listaConectados.items():
+		print("buscando")
+		if name == data['enviador']:
+			print("emitiendo a socket")
+			socketio.emit('solicitudDePartida',{'mensaje':'El jugador ' + data['enviador'] + ' desea comenzar una partida con usted'}, room=data['receptor'])
 
 def removekey(d, key):
     r = dict(d)
