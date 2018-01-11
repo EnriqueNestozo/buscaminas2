@@ -1,7 +1,7 @@
 var usuarios = [];
 var points = [];
 var myUser;
-
+/*
 document.getElementById('btnIngresar').onclick = function(){
 	var usuario = document.getElementById('usuario').value;
 	var password = document.getElementById('password').value;
@@ -29,6 +29,10 @@ document.getElementById('registro').onclick = function(){
 	document.getElementById("inicioSesion").classList.remove('active');
 	document.getElementById("registro").classList.add('active');
 };
+*/
+
+
+
 
 
 
@@ -44,7 +48,7 @@ var iniciarSesion = function(username,password){
 		if(data.re == "True"){
 			console.log("true");
 			myUser = data.id;
-			socket.emit('requestPage',myUser)
+			socket.emit('requestPage')
 		}else{
 			alert(data.re)
 		};

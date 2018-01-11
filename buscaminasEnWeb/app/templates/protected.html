@@ -7,12 +7,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="../static/node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<title>Buscaminas online</title>
 </head>
-<body style="width: 100%; max-width: 1000px; height:900px; max-height: 930px">
+<body style="width: 100%; max-width: 1000px">
 	<div class="row">
-		<div class="col-sm-4 bg-light">
+		<div class="col-sm-4" style="background-color: #E0E0E0">
 			<h1 id="titulo" align="center" style="padding-top: 1em">BUSCAMINAS</h1>
 			<h5 id="sub" align="center" style="padding-bottom: 4.5em">ONLINE</h5>
 			<ul class="nav nav-pills mb-3 flex-column" id="pills-tab" role="tablist">
@@ -20,7 +20,7 @@
 			    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Jugadores</a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Ranking</a>
+			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Ranking</a>
 			  </li>
 			  <li class="nav-item">
 			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Perfil</a>
@@ -34,22 +34,20 @@
 			</ul>
 			
 		</div>
-		<div class="col-sm-8 bg-secondary">
+		<div class="col-sm-8" style="background-color: #BDBDBD">
 			<div id="conectados">
-				
+
 			</div>
 		</div>
 	</div>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script src="../static/node_modules/socket.io-client/dist/socket.io.js"></script>
 
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="../static/node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="../static/node_modules/tether/dist/js/tether.min.js"></script>
+	<script src="../static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
-
-	<script src="../static/protected.js"></script>
+	<script src="../static/loby.js"></script>
 
 </body>
 

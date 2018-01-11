@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" type="text/css" href="../static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<title>Buscaminas online</title>
+</head>
+<body style="width: 100%; max-width: 1000px;">
+	{% if error %}
+	    <p class=error><strong>Error:</strong> {{ error }}
+	{% endif %}
+	<div class="row" style="background-color: #BDBDBD">
+		<div class="col-sm-6">
+			<h1 id="titulo" align="center">BUSCAMINAS</h1>
+			<h5 id="sub" align="center" style="padding-bottom: 3em">ONLINE</h5>
+            <nav class="nav nav-pills pull-right nav-justified" style="padding-bottom: .5em">
+                <li class="nav-link" id="inicioSesion"><a href="/">Inicia sesion</a>
+                </li>
+                <li class="nav-link active" id="registro"><a href="#">Registrate</a>
+                </li>
+            </nav>
+
+			<div id="formRegistro" style="text-align: center; display:block;">
+				<form method="POST">
+					<div  class="form-group">
+						<input name="email" placeholder="correo electronico" type="email" id="correo" required="true"  maxlength="50"></input>
+					</div>
+					<div  class="form-group">
+						<input  name="usuario" placeholder="nombre de usuario" type="usuario" id="usuario-registro" required="true"  maxlength="20"></input>
+					</div>
+					<div class="form-group">
+						<input name="password" placeholder="contraseña" type="password" id="contraseña" required="true"  required="true" maxlength="20"></input>
+					</div>
+					<div class="form-group">
+						<input name="password2"  placeholder="repetir contraseña" type="password" id="contraseña-repetida" required="true"  maxlength="20"></input>
+					</div>
+					<div  class="form-group">
+						<button class="btn btn-primary mb-2" raised id="btnRegistrar">Registrar</button>
+					</div>
+				</form>					
+
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<img src="{{ url_for('static', filename='imagen.png') }}" width="470" height="470">
+		</div>
+	</div>
+	<script src="../static/node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="../static/node_modules/tether/dist/js/tether.min.js"></script>
+	<script src="../static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+	<script src="../static/signUp.js"></script>
+
+</body>
+
+</html>

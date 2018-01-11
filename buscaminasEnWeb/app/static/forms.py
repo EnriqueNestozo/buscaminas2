@@ -5,3 +5,4 @@ class SignupForm(FlaskForm):
     usuario = StringField('usuario')
     password = PasswordField('password')
     submit = SubmitField("Sign In")
+    
