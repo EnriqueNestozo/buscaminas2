@@ -1,9 +1,16 @@
 var myUser="";
 var users="";
 var mySocket=null;
-var arrayDeIds = []
+var arrayDeIds = [];
+var socket;
+var usuario = {
+	user : sessionStorage.getItem('user')
+};
 
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+socket = io.connect('http://' + document.domain + ':' + location.port,usuario);
+
+socket.emit('ready',usuario)
+
 socket.on('connected',function(info){
 	if(mySocket==null){
 		mySocket = info.idSocket;
@@ -18,6 +25,9 @@ socket.on('usersConnected', function(sockets){
 			if(sockets[key] == mySocket){
 				myUser = key
 				console.log("mi usuario es: " + myUser)
+				var usuario = {
+					user : sessionStorage.setItem('user',myUser)
+				}
 			}
 		}	
 	}
@@ -37,8 +47,42 @@ socket.on('usersConnected', function(sockets){
 });
 
 socket.on('solicitudDePartida',function(solicitud){
-	alert(solicitud.mensaje);
+	if(confirm(solicitud.mensaje)){
+		for(var key in users){
+			if(key == solicitud.player1){
+				var partida ={
+					idRoom: mySocket+users[key],
+					jugador1:users[key],
+					jugador2:myUser
+				};
+				socket.emit('redirectToGame',partida)
+				window.location.href = 'http://' + document.domain + ':' + location.port + '/game/' + partida.idRoom
+			}
+		}
+		
+	}else{
+		for(var key in users){
+			if(key == solicitud.player1){
+				var mensaje = {
+					enviador: myUser,
+					receptor: users[key]
+				};
+			}
+		}
+		
+		socket.emit('respuesta',mensaje)
+	}
+});
+
+socket.on('partidaNegada',function(respuesta){
+	console.log(respuesta)
+	alert(respuesta.mensaje)
+});
+
+socket.on('partidaAceptada',function(respuesta){
+	window.location.href = 'http://' + document.domain + ':' + location.port + '/game/' + respuesta.idRoom
 })
+
 
 function quitarDesconectados(sockets){
 	for(i=0;i<arrayDeIds.length;i++){

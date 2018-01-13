@@ -55,6 +55,7 @@ var iniciarSesion = function(username,password){
 	});
 	socket.on('redirectToPrincipal', function(destination){
 		console.log("redirectToPrincipal")
+		
 		window.location.href = destination.url;
 	});
 	

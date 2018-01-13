@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" type="text/css" href="../static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<title>Buscaminas online</title>
+	<style>
+		.tablero{
+			width: 470px;
+			height: 470px;			
+			display: block; 			
+		}
+
+		.tablero div{
+			width: 10%;
+			height: 10%;
+			border: 1px solid black;
+			background-color: #404040;				
+			font-size: 30;	
+			text-align: center;
+			float: left;
+		}
+	</style>
+</head>
+<body >
+	<div class="row" style="background-color: #E0E0E0;width: 100%; max-width: 1000px;">
+		<div class="col-sm-4" id="info">
+			<button id="mandar">Mensaje</button>
+			<h1>Hola</h1>
+		</div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-6 tablero" id="tablerominas" style="overflow: auto;">
+		</div>
+		<div class="col-sm-1"></div>
+	</div>
+	<script src="../static/node_modules/socket.io-client/dist/socket.io.js"></script>
+	<script src="../static/node_modules/jquery/dist/jquery.min.js"></script>
+	<script src="../static/node_modules/tether/dist/js/tether.min.js"></script>
+	<script src="../static/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="../static/game.js"></script>
+</body>
+</html>

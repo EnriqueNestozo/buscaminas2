@@ -1,12 +1,13 @@
 #! /usr/bin/env python35
 from flask import render_template,request, redirect, url_for, g, session
+from flask_socketio import join_room, leave_room
 from app import app, socketio
 from app.static import *
 import os
 from app.static.models2 import *
 from app.static.Usuario import Usuario
 from collections import OrderedDict
-
+import random
 
 sesiones = []
 
@@ -69,12 +70,27 @@ def verificacion(usuario):
 """
 @socketio.on('connect')
 def connect():
-    print("usuario conectado"+ request.sid)
-    listaConectados.update({str(session['user']) : request.sid})
-    print(listaConectados)
-    socketio.emit('connected',{'idSocket': request.sid})
-    socketio.emit('usersConnected',listaConectados)
+	print("conectado: " + request.sid)
 
+@socketio.on('ready')
+def ready(usuario):
+	if usuario['user']==None:
+		print("usuario none")
+		print("id usuario conectado: "+ request.sid + " es de: " + str(session['user']))
+		listaConectados.update({str(session['user']) : request.sid})
+		print(listaConectados)
+		socketio.emit('connected',{'idSocket': request.sid})
+		socketio.emit('usersConnected',listaConectados)
+	else:
+		print("usuario recuperado")
+		print("id usuario conectado: "+ request.sid + " es de: " + usuario['user'])
+		listaConectados.update({usuario['user'] : request.sid})
+		print(listaConectados)
+		socketio.emit('connected',{'idSocket': request.sid})
+		socketio.emit('usersConnected',listaConectados)	
+	
+    
+##creo que no se usa
 @socketio.on('requestUsersConnected')
 def usersConnected():
 	socketio.emit('usersConnected',listaConectados)
@@ -95,20 +111,146 @@ def message(data):
 		print("buscando")
 		if name == data['enviador']:
 			print("emitiendo a socket")
-			socketio.emit('solicitudDePartida',{'mensaje':'El jugador ' + data['enviador'] + ' desea comenzar una partida con usted'}, room=data['receptor'])
+			socketio.emit('solicitudDePartida',{'mensaje':'El jugador ' + data['enviador'] + ' desea comenzar una partida con usted', 'player1':data['enviador']}, room=data['receptor'])
 
-def removekey(d, key):
-    r = dict(d)
-    del r[key]
-    return r
 
+"""
 @socketio.on('sesion')
 def sesion():
 	listaDeSesiones = ' '.join(map(str, sesiones))
 	print(listaDeSesiones)
 	socketio.emit('respuestaSesion', {'re': listaDeSesiones})
 
+
+
+
+"""
+
+@socketio.on('respuesta')
+def respuesta(res):
+	for name,socketid in listaConectados.items():
+		if socketid == res['receptor']:
+			socketio.emit('partidaNegada',{'mensaje':'El jugador rechazó la partida'}, room=socketid)
+
+
+@socketio.on('redirectToGame')
+def redirectToGame(partida):
+	print("redireccionando")
+	socketio.emit('partidaAceptada',partida,room=partida['jugador1'])
+
+@socketio.on('join')
+def on_join(data):
+    username = data['username']
+    room = data['room']
+    join_room(room)
+    socketio.emit("mensaje", {'texto': username + ' has entered the room.'}, room=room)
+
+@socketio.on('leave')
+def on_leave(data):
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    send(username + ' has left the room.', room=room)
+
+@socketio.on('mensajeDesdeRoom')
+def mensajeDesdeRoom(data):
+	socketio.emit("respuestaRoom",{'menssage':data['mensaje']}, room=data['room'])
+
+@socketio.on('solicitarTablero')
+def solicitarTablero(data):
+	socketio.emit("tableroGenerado",{'tablero': generarTablero()},room=data['room'])
+
+
+def generarTablero():
+	tablero = [[0] * 10 for i in range(10)]
+	tablero = asignarMinas(tablero)
+	tablero = asignarNumeros(tablero)
+	return tablero
+
+
+def asignarMinas(tablero):
+	minas = 51
+	for i in range(minas):
+		is_bomb = False
+		while not is_bomb:
+			x = random.randint(0, len(tablero) -1)
+			y = random.randint(0, len(tablero) - 1)
+			if tablero[x][y] !=9:
+				tablero[x][y] = 9
+				is_bomb = True
+	return tablero
+
+def asignarNumeros(tablero):
+	for x in range(len(tablero)):
+		for y in range(len(tablero[x])):
+			if tablero[x][y] == 9:
+				tablero = verificarAbajoIzquierda(tablero, x, y)
+				tablero = verificarAbajo(tablero,x,y)
+				tablero = verificarAbajoDerecha(tablero,x,y)
+				tablero = verificarArribaIzquierda(tablero,x,y)
+				tablero = verificarArriba(tablero,x,y)
+				tablero = verificarArribaDerecha(tablero,x,y)
+				tablero = verificarIzquierda(tablero,x,y)
+				tablero = verificarDerecha(tablero,x,y)
+	return tablero
+
+def verificarAbajoIzquierda(tablero,x,y):
+	if x + 1 < len(tablero[x]) and y - 1 >= 0:
+		if tablero[x+1][y-1] != 9:
+			tablero[x+1][y-1] +=1
+	return tablero
+
+def verificarAbajo(tablero,x,y):
+	if x + 1 < len(tablero[0]):
+		if tablero[x+1][y] != 9:
+			tablero[x+1][y] +=1
+	return tablero
+
+def verificarAbajoDerecha(tablero,x,y):
+	if x + 1 < len(tablero[0]) and y + 1 < len(tablero):
+		if tablero[x+1][y+1] != 9:
+			tablero[x+1][y+1] +=1
+	return tablero
+
+def verificarArribaIzquierda(tablero,x,y):
+	if x -1 >=0 and y - 1 >=0:
+		if tablero[x-1][y-1] != 9:
+			tablero[x-1][y-1] +=1
+	return tablero
+
+def verificarArriba(tablero,x,y):
+	if x - 1 >=0:
+		if tablero[x-1][y] != 9:
+			tablero[x-1][y] +=1
+	return tablero
+
+def verificarArribaDerecha(tablero,x,y):
+	if x - 1 >=0 and y + 1 < len(tablero):
+		if tablero[x-1][y+1] != 9:
+			tablero[x-1][y+1] +=1
+	return tablero
+
+def verificarIzquierda(tablero,x,y):
+	if y - 1 >=0:
+		if tablero[x][y-1] != 9:
+			tablero[x][y-1] +=1
+	return tablero
+
+def verificarDerecha(tablero,x,y):
+	if y + 1 < len(tablero):
+		if tablero[x][y+1] != 9:
+			tablero[x][y+1] +=1
+	return tablero
+
+
+
 app.secret_key = os.urandom(24)
+
+@app.route('/game/<room>')
+def game(room):
+	if g.user:
+		return render_template('game.html')
+	return redirect(url_for('home'))
 
 @app.route('/getsession')
 def getsession():
