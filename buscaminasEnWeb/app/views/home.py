@@ -169,7 +169,7 @@ def generarTablero():
 
 
 def asignarMinas(tablero):
-	minas = 51
+	minas = 21
 	for i in range(minas):
 		is_bomb = False
 		while not is_bomb:
