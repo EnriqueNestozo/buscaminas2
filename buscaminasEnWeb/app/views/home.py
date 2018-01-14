@@ -138,12 +138,17 @@ def redirectToGame(partida):
 	print("redireccionando")
 	socketio.emit('partidaAceptada',partida,room=partida['jugador1'])
 
+
+jugador = True
+
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
-    room = data['room']
-    join_room(room)
-    socketio.emit("mensaje", {'texto': username + ' has entered the room.'}, room=room)
+	global jugador
+	username = data['username']
+	room = data['room']
+	join_room(room)
+	socketio.emit("mensaje", {'texto': username + ' has entered the room.', "miJugador":jugador, 'jugador': username}, room=room)
+	jugador = not jugador
 
 @socketio.on('leave')
 def on_leave(data):
@@ -160,6 +165,36 @@ def mensajeDesdeRoom(data):
 def solicitarTablero(data):
 	socketio.emit("tableroGenerado",{'tablero': generarTablero()},room=data['room'])
 
+
+@socketio.on('tiro')
+def tiro(data):
+	socketio.emit("envioDeTiro",{'casilla':data['casilla'],'user':data['user']},broadcast=True,room=data['room'],include_self=False)
+
+"""
+turno = False
+@socketio.on('preguntarTurno')
+def turno(data):
+	global turno
+	print("turno: "+turno)
+	if turno:
+		turnoDe = 1
+	else:
+		turnoDe = 2
+	emit('respuestaTurno',{'turno': turnoDe},room=data['room'], callback=)
+	turno = not turno
+"""
+@socketio.on("cambiarTurno")
+def cambiarTurno(data):
+	turno = 0
+	if data['turnoActual'] == "1":
+		turno = 2
+	else:
+		turno = 1
+	socketio.emit('respuestaTurno',{'turno':turno},room=data['room'])
+
+@socketio.on('enviarMiUsuario')
+def enviarMiUsuario(data):
+	socketio.emit('recibirUsuario',{'usuario':data['username']},broadcast=True,room=data['room'], include_self=False)
 
 def generarTablero():
 	tablero = [[0] * 10 for i in range(10)]

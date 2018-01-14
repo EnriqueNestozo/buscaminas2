@@ -1,4 +1,3 @@
-var mySocket=null;
 var myUser="";
 var roomKey="";
 var tableroEnArray=null
@@ -22,11 +21,34 @@ var partida = {
 socket.emit('join',partida)
 
 socket.on("mensaje",function(data){
+	//quitar
 	console.log(data.texto)
+	console.log(data.miJugador)
+	if(myUser == ""){
+		if(data.miJugador){
+			myUser = 1;
+			document.getElementById("nombre1").innerHTML = "<p style='margin-top:15px;font-size:30px;text-align:center;'>" + usuario.user + "</p>";
+		}else{
+			myUser = 2;
+			document.getElementById("nombre2").innerHTML = "<p style='margin-top:15px;font-size:30px;text-align:center;'>" + usuario.user + "</p>";
+		}
+		//quitar
+		console.log(myUser)
+	}else{
+		//quitar
+		console.log("aqui")
+		document.getElementById("nombre2").innerHTML = "<p style='margin-top:15px;font-size:30px;text-align:center;'>" + data.jugador + "</p>";
+		socket.emit('enviarMiUsuario',partida);
+	}
 	numOfUsers+=1;
 	if(numOfUsers>1){
 		socket.emit('solicitarTablero',partida)	
 	}
+	socket.on('recibirUsuario',function(data){
+		//quitar
+		console.log("recibi usuario")
+		document.getElementById("nombre1").innerHTML = "<p style='margin-top:15px;font-size:30px;text-align:center;'>" + data.usuario + "</p>";
+	});
 });
 
 
@@ -42,20 +64,6 @@ socket.on('tableroGenerado',function(data){
 	
 });
 
-//Quitar
-document.getElementById("mandar").onclick = function(){
-	console.log(tableroEnArray[0])
-	var mensaje={
-		room:roomKey,
-		mensaje: "hola"
-	}
-	socket.emit("mensajeDesdeRoom",mensaje)
-};
-///quitar
-socket.on("respuestaRoom", function(data){
-	console.log(data.menssage)
-});
-
 function crearTablero(tablero){
 	crearCasillas()
 }
@@ -66,44 +74,102 @@ function crearCasillas(){
         for(var j = 0; j < 10; j++){			           
            var div = document.createElement("div");
             div.id = i + "" + j;			            
-            div.addEventListener("click",mostrarNumero, true);
+            div.addEventListener("click",function(){
+            	verificarTurno(this.id,myUser)},true);
             var tablerominas = document.getElementById("tablerominas");      
             tablerominas.appendChild(div);
-            //mandar nuevo array al otro usuario y el turno
         }
     }		    
     
 }
 
-function mostrarNumero(e){
-	var auxstr = this.id.split("");				
-	var myid = auxstr[0] + auxstr[1];			
+
+socket.on("respuestaTurno",function(data){
+	console.log(data)
+	document.getElementById("turno").innerHTML = data.turno
+});
+
+function verificarTurno(id,myUser){
+	var turno = document.getElementById("turno").innerHTML
+	var dato = {
+		room:roomKey,
+		turnoActual: turno
+	}
+	if(myUser == turno){
+		if(document.getElementById(id).textContent == "" || document.getElementById(id).style.backgroundImage = ""){
+			if(!mostrarNumero(id,myUser)){
+				socket.emit("cambiarTurno",dato)
+			}
+		}
+	}else{
+		alert("No te toca")
+	}
+	/*
+	socket.emit('preguntarTurno',{'room':roomKey},function(data){
+		if(data.turno == myUser){
+			mostrarNumero(id,myUser);
+		}else{
+			alert("No te toca");
+		}
+	});
+	*/
+};
+
+socket.on("envioDeTiro",function(data){
+	mostrarNumero(data.casilla,data.user)
+});
+
+function mostrarNumero(id,user){
+	var auxstr = id.split("");			
+	var myid = auxstr[0] + auxstr[1];
+
+	var envio ={
+		casilla:myid,
+		room : roomKey,
+		user : myUser
+	}
+
 	divObj = document.getElementById(myid);
 	var fila = tableroEnArray[auxstr[0]];
 	if(fila[auxstr[1]] == 0){
 		divObj.style.backgroundColor = "#818181";
 		//Aqui sustituyo el valor por un - para saber que ya se tiro ahi (debo hacer lo mismo para las casillas que se abrieron)
 		tableroEnArray[auxstr[0]][auxstr[1]] = "-"
-		abrirAlrededor(auxstr[0],auxstr[1])
+		socket.emit("tiro",envio)
+		abrirAlrededor(parseInt(auxstr[0]),parseInt(auxstr[1]))
+		return false
 	}else{
 		if(fila[auxstr[1]] != 9 && !isNaN(fila[auxstr[1]])){
 			document.getElementById(myid).innerHTML = "<p style='margin-top:15px;'>" + fila[auxstr[1]] + "</p>";
 			divObj.style.backgroundColor = "#818181";
 			//Aqui sustituyo el valor por un - para saber que ya se tiro ahi 
 			tableroEnArray[auxstr[0]][auxstr[1]] = "-"
+			socket.emit("tiro",envio)
+			return false
 		}else{
 			if(fila[auxstr[1]] == 9){
-				tableroEnArray[auxstr[0]][auxstr[1]] = "x"
-				divObj.style.backgroundColor = "#818181";
-				divObj.style.backgroundImage = "url(/static/mina.png)";
-			}else{
-				alert("Por favor tira en una casilla que no haya sido abierta")
-			}
+				if(user == 1){
+					tableroEnArray[auxstr[0]][auxstr[1]] = "x"
+					divObj.style.backgroundColor = "#818181";
+					divObj.style.backgroundImage = "url(/static/mina.png)";
+					socket.emit("tiro",envio)
+					comprobarMinas();
+					return true
+					
+				}else{
+					tableroEnArray[auxstr[0]][auxstr[1]] = "Y"
+					divObj.style.backgroundColor = "#818181";
+					divObj.style.backgroundImage = "url(/static/minared.png)";
+					socket.emit("tiro",envio)
+					comprobarMinas();
+					return true
 
+				}
+				
+			}
 		}
 	}
-	console.log(tableroEnArray)
-						
+	console.log(tableroEnArray)						
 };
 
 function abrirAlrededor(fila,pos){
@@ -129,6 +195,12 @@ function abrirAlrededor(fila,pos){
 };
 
 function abrirCeros(var1,var2,var3,var4,var5,var6){
+	console.log(var1)
+	console.log(var2)
+	console.log(var3)
+	console.log(var4)
+	console.log(var5)
+	console.log(var6)
 	for(var i = var1; i<=var3;i++){
 		for(var j = var2; j<=var4;j++){
 			var myid = i + "" + j;
@@ -156,3 +228,45 @@ function abrirCeros(var1,var2,var3,var4,var5,var6){
 	}
 
 };	
+
+function comprobarMinas(){
+	var misMinas=0;
+	var minasContrario=0;
+	for(var i=0;i<10;i++){
+		for(var j=0;j<10;j++){
+			if(tableroEnArray[i][j] == "x"){
+
+				if(myUser==1){
+					misMinas+=1;
+					console.log("mis minas como jugador1-azul" +misMinas)
+					document.getElementById("mina1").innerHTML = "<p style='margin-top:15px;font-size:20px;text-align:center;'>" + misMinas + "</p>";
+				}else{
+					minasContrario+=1;
+					console.log("minas contrario como jugador2-rojo" +minasContrario)
+					document.getElementById("mina1").innerHTML = "<p style='margin-top:15px;font-size:20px;text-align:center;'>" + minasContrario + "</p>";
+				}
+			}
+			if(tableroEnArray[i][j]== "Y"){
+				if(myUser==2){
+					misMinas+=1;
+					console.log("mis minas como jugador2-rojo"+misMinas)
+					document.getElementById("mina2").innerHTML = "<p style='margin-top:15px;font-size:20px;text-align:center;'>" + misMinas + "</p>";
+				}else{
+					minasContrario+=1;
+					console.log("minas contrario como jugador1-azul" +minasContrario)
+					document.getElementById("mina2").innerHTML = "<p style='margin-top:15px;font-size:20px;text-align:center;'>" + minasContrario + "</p>";
+				}
+			}
+		}
+	}
+	verificarGanador(misMinas,minasContrario)
+};
+
+function verificarGanador(misMinas,minasContrario){
+	if(misMinas > 10){
+		alert("Haz ganado")
+	}
+	if(minasContrario > 10){
+		alert("El oponente ha ganado")
+	}
+};
