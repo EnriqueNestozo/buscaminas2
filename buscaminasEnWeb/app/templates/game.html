@@ -28,17 +28,24 @@
 	<div class="row" style="background-color: #E0E0E0;width: 100%; max-width: 1000px;">
 		
 		<div class="col-sm-4" id="info">
-			<div>
-				<img src="{{ url_for('static', filename='user1.png') }}" width="150" height="150" style="vertical-align:middle">
-			</div>
-			<div id="nombre1"></div>
-			<div id="mina1"></div>
 			
-			<div>
-				<img src="{{ url_for('static', filename='user2.png') }}" width="150" height="150" style="vertical-align:middle">
-			</div>
-			<div id="nombre2"></div>
-			<div id="mina2"></div>
+
+				<div style="text-align:center">
+					<img src="{{ url_for('static', filename='user1.png') }}" width="150" height="150" style="vertical-align:middle">
+				</div>
+				<div id="nombre1"></div>
+				<div id="mina1"></div>
+				
+				<div style="text-align:center">
+					<img src="{{ url_for('static', filename='user2.png') }}" width="150" height="150" style="vertical-align:middle">
+				</div>
+				<div id="nombre2"></div>
+				<div id="mina2"></div>
+				<div style="text-align:center">
+					<button type="button" class="btn btn-primary btn-sm" id="salir">Salir</button>
+				</div>
+
+			
 			
 		</div>
 		<div class="col-sm-1"></div>

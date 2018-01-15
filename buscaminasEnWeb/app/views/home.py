@@ -155,7 +155,26 @@ def on_leave(data):
     username = data['username']
     room = data['room']
     leave_room(room)
+    print(username + " leave the room " + room)
     send(username + ' has left the room.', room=room)
+
+@socketio.on('ganador')
+def ganador(data):
+	if(buscarEnListaDePartidas(data['gana'])):
+		print("usuario ganador esta: " + data['gana'])
+		print(actualizar(data['gana'],True))
+	else:
+		print("usuario ganador no está")
+		print(crearListaUsuario(data['gana']))
+		print(actualizar(data['gana'],True))
+
+	if(buscarEnListaDePartidas(data['pierde'])):
+		print("usuario perdedor esta: " + data['pierde'])
+		print(actualizar(data['pierde'],False))
+	else:
+		print("usuario perdedor no esta")
+		print(crearListaUsuario(data['pierde']))
+		print(actualizar(data['pierde'],False))
 
 @socketio.on('mensajeDesdeRoom')
 def mensajeDesdeRoom(data):
@@ -195,6 +214,12 @@ def cambiarTurno(data):
 @socketio.on('enviarMiUsuario')
 def enviarMiUsuario(data):
 	socketio.emit('recibirUsuario',{'usuario':data['username']},broadcast=True,room=data['room'], include_self=False)
+
+@socketio.on('solicitudRanking')
+def solicitudRanking():
+	lista = []
+	lista = obtenerMejoresJugadores()
+	print (lista)
 
 def generarTablero():
 	tablero = [[0] * 10 for i in range(10)]

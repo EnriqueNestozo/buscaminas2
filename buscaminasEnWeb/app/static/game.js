@@ -83,6 +83,10 @@ function crearCasillas(){
     
 }
 
+function deshabilitarCasillas(){
+	document.getElementById("turno").innerHTML = 0
+}
+
 
 socket.on("respuestaTurno",function(data){
 	console.log(data)
@@ -96,11 +100,14 @@ function verificarTurno(id,myUser){
 		turnoActual: turno
 	}
 	if(myUser == turno){
-		if(document.getElementById(id).textContent == "" || document.getElementById(id).style.backgroundImage = ""){
-			if(!mostrarNumero(id,myUser)){
+		if(document.getElementById(id).textContent == "" || document.getElementById(id).style.backgroundImage == ""){
+			if(mostrarNumero(id,myUser) == false){
 				socket.emit("cambiarTurno",dato)
 			}
 		}
+		
+	}else if(turno==0){
+		alert("partida terminada")
 	}else{
 		alert("No te toca")
 	}
@@ -263,10 +270,44 @@ function comprobarMinas(){
 };
 
 function verificarGanador(misMinas,minasContrario){
-	if(misMinas > 10){
-		alert("Haz ganado")
+	if(misMinas > 3){
+		if(myUser==1){
+			var ganador = document.getElementById("nombre1").textContent
+			var perdedor = document.getElementById("nombre2").textContent
+			var jugadorGanador ={
+				gana:ganador,
+				pierde:perdedor 
+			}
+			socket.emit("ganador",jugadorGanador);
+			alert("El jugador " + ganador + " ha ganado")
+			deshabilitarCasillas()			
+		}else{
+			var ganador = document.getElementById("nombre2").textContent
+			alert("El jugador " + ganador + " ha ganado")
+			deshabilitarCasillas()
+		}
 	}
-	if(minasContrario > 10){
-		alert("El oponente ha ganado")
+	if(minasContrario > 3){
+		if(myUser==2){
+			var ganador = document.getElementById("nombre1").textContent
+			alert("El jugador " + ganador + " ha ganado")
+			deshabilitarCasillas()
+		}else{
+			var ganador = document.getElementById("nombre2").textContent
+			var perdedor = document.getElementById("nombre1").textContent
+			var jugadorGanador ={
+				gana:ganador,
+				pierde:perdedor
+			}
+			socket.emit("ganador",jugadorGanador);
+			alert("El jugador " + ganador + " ha ganado")
+			deshabilitarCasillas()
+		}	
 	}
+	
 };
+
+
+document.getElementById("salir").onclick = function(){
+	window.location = "/protected"
+}

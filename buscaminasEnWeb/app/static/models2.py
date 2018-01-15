@@ -37,7 +37,7 @@ def crearUsuario(Usuario):
                 user = Users.create(username = Usuario.getName(), password = newPassword, email = Usuario.getEmail())
                 user.save()
             return True
-        except peewee.IngrityError:
+        except peewee.IntegrityError:
             return 'Error: %s No se pudo crear el usuario ' % Usuario.getName()
    
 
@@ -57,3 +57,46 @@ def comprobarUsuario(usuario):
         return True
     except Exception as e:
         return False
+
+def buscarEnListaDePartidas(usuario):
+    try:
+        listaObtenida = Listapartida.get(Listapartida.username == usuario)
+        return True
+    except:
+        return False
+
+def crearListaUsuario(usuario):
+    try:
+        with database.atomic():
+            lista = Listapartida.create(idpartida=None, partidasganadas=0, partidastotales=0, username=usuario)
+            lista.save()
+        return True
+    except peewee.IntegrityError:
+        return 'Error: %s No se pudo crear la lista de partidas del usuario'
+
+def actualizar(usuario,resultado):
+    try:
+        if resultado == True:
+            with database.atomic():
+                query = Listapartida.update(partidasganadas=Listapartida.partidasganadas +1).where(Listapartida.username == usuario)
+                query.execute()
+            with database.atomic():
+                query = Listapartida.update(partidastotales=Listapartida.partidastotales +1).where(Listapartida.username == usuario)
+                query.execute()
+            return True
+        else:
+            with database.atomic():
+                query = Listapartida.update(partidastotales=Listapartida.partidastotales +1).where(Listapartida.username == usuario)
+                query.execute()
+            return True
+    except peewee.IntegrityError:
+        return 'Error %s No se pudo actualizar la lista de partidas del usuario'
+
+def obtenerMejoresJugadores():
+    lista = []
+    try:
+        for x in listapartida.select().order_by(-listapartida.partidasganadas):
+            lista.append(x)
+        return lista
+    except e:
+        return 'Error en la obtencion de los jugadores'
