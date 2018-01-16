@@ -32,13 +32,13 @@ def crearUsuario(Usuario):
         try:
             with database.atomic():
                 md5 = hashlib.md5()
-                md5.update(Usuario.getPassword().encode('utf-8'))
+                md5.update(Usuario.get_password().encode('utf-8'))
                 newPassword = md5.hexdigest()
-                user = Users.create(username = Usuario.getName(), password = newPassword, email = Usuario.getEmail())
+                user = Users.create(username = Usuario.get_name(), password = newPassword, email = Usuario.get_email())
                 user.save()
             return True
         except peewee.IntegrityError:
-            return 'Error: %s No se pudo crear el usuario ' % Usuario.getName()
+            return 'Error: %s No se pudo crear el usuario ' % Usuario.get_name()
    
 
 def comprobarExistenciaUsuario(usuario):
@@ -50,10 +50,10 @@ def comprobarExistenciaUsuario(usuario):
 
 def comprobarUsuario(usuario):
     md5 = hashlib.md5()
-    md5.update(usuario.getPassword().encode('utf-8'))
+    md5.update(usuario.get_password().encode('utf-8'))
     newPassword = md5.hexdigest()
     try:
-        query = (Users.select().where( (Users.username == usuario.getName()) & (Users.password == newPassword) ).get() )
+        query = (Users.select().where( (Users.username == usuario.get_name()) & (Users.password == newPassword) ).get() )
         return True
     except Exception as e:
         return False
@@ -95,8 +95,26 @@ def actualizar(usuario,resultado):
 def obtenerMejoresJugadores():
     lista = []
     try:
-        for x in listapartida.select().order_by(-listapartida.partidasganadas):
-            lista.append(x)
-        return lista
-    except e:
+        user = Users.get()
+        partida = Listapartida.get()
+        sq = Listapartida.select().order_by(Listapartida.partidasganadas.desc())
+        toppings = list(sq)
+        usuarios = Listapartida.select().join(Users).order_by(Listapartida.partidasganadas.desc())
+        print(usuarios)
+
+        for us in usuarios:
+            us.user.partida
+            numPartidas = us.partidasganadas
+            query = Listapartida.select(Listapartida.username).where (partidasganadas == numPartidas)
+            print(query.execute())
+
+    except:
         return 'Error en la obtencion de los jugadores'
+
+def obtenerPerfilUsuario(usuario):
+    try:
+        usuarioObtenido = Users.get(Users.username == usuario)
+        user = Usuario(usuarioObtenido.username,"",usuarioObtenido.email)
+        return user
+    except:
+        return 'no se puede obtener el usuario'

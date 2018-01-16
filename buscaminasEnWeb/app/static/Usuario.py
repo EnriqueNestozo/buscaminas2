@@ -4,11 +4,11 @@ class Usuario:
         self.__password = password
         self.__email = email
 
-    def getName(self):
+    def get_name(self):
         return self.__name
 
-    def getPassword(self):
+    def get_password(self):
         return self.__password
 
-    def getEmail(self):
+    def get_email(self):
         return self.__email

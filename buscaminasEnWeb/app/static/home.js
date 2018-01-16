@@ -1,6 +1,4 @@
-var usuarios = [];
-var points = [];
-var myUser;
+
 /*
 document.getElementById('btnIngresar').onclick = function(){
 	var usuario = document.getElementById('usuario').value;
@@ -30,33 +28,3 @@ document.getElementById('registro').onclick = function(){
 	document.getElementById("registro").classList.add('active');
 };
 */
-
-
-
-
-
-
-
-var iniciarSesion = function(username,password){
-	var socket = io.connect('http://' + document.domain + ':' + location.port);
-	var usuario = {
-		nombre: username,
-		contrasena: password
-	};
-	socket.emit('verificacionUsuario',usuario);
-	socket.on('respuestaVerificacion',function(data){
-		if(data.re == "True"){
-			console.log("true");
-			myUser = data.id;
-			socket.emit('requestPage')
-		}else{
-			alert(data.re)
-		};
-	});
-	socket.on('redirectToPrincipal', function(destination){
-		console.log("redirectToPrincipal")
-		
-		window.location.href = destination.url;
-	});
-	
-}

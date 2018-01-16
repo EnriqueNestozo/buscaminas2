@@ -56,12 +56,6 @@ socket.on('tableroGenerado',function(data){
 	tableroEnArray = data.tablero
 	console.log(tableroEnArray)
 	crearTablero(tableroEnArray);
-	for(var x=0; x<10; x++){
-		for(var y=0; y<10;y++){
-			var fila = data.tablero[x]
-		}
-	}
-	
 });
 
 function crearTablero(tablero){
@@ -107,9 +101,15 @@ function verificarTurno(id,myUser){
 		}
 		
 	}else if(turno==0){
-		alert("partida terminada")
+		document.getElementById("partidaTerminada").style.display="block";
+		setTimeout(function(){
+			document.getElementById("partidaTerminada").style.display="none";
+		},2000);
 	}else{
-		alert("No te toca")
+		document.getElementById("noEsTurno").style.display="block";
+		setTimeout(function(){
+			document.getElementById("noEsTurno").style.display="none";
+		},2000);
 	}
 	/*
 	socket.emit('preguntarTurno',{'room':roomKey},function(data){
@@ -136,7 +136,7 @@ function mostrarNumero(id,user){
 		user : myUser
 	}
 
-	divObj = document.getElementById(myid);
+	var divObj = document.getElementById(myid);
 	var fila = tableroEnArray[auxstr[0]];
 	if(fila[auxstr[1]] == 0){
 		divObj.style.backgroundColor = "#818181";
@@ -270,7 +270,9 @@ function comprobarMinas(){
 };
 
 function verificarGanador(misMinas,minasContrario){
-	if(misMinas > 3){
+	var ganador="";
+	var perdedor="";
+	if(misMinas > 10){
 		if(myUser==1){
 			var ganador = document.getElementById("nombre1").textContent
 			var perdedor = document.getElementById("nombre2").textContent
@@ -279,19 +281,19 @@ function verificarGanador(misMinas,minasContrario){
 				pierde:perdedor 
 			}
 			socket.emit("ganador",jugadorGanador);
-			alert("El jugador " + ganador + " ha ganado")
-			deshabilitarCasillas()			
+			deshabilitarCasillas();
+			anunciarGanador(ganador);
 		}else{
 			var ganador = document.getElementById("nombre2").textContent
-			alert("El jugador " + ganador + " ha ganado")
-			deshabilitarCasillas()
+			deshabilitarCasillas();
+			anunciarGanador(ganador);
 		}
 	}
-	if(minasContrario > 3){
+	if(minasContrario > 10){
 		if(myUser==2){
 			var ganador = document.getElementById("nombre1").textContent
-			alert("El jugador " + ganador + " ha ganado")
-			deshabilitarCasillas()
+			deshabilitarCasillas();
+			anunciarGanador(ganador);
 		}else{
 			var ganador = document.getElementById("nombre2").textContent
 			var perdedor = document.getElementById("nombre1").textContent
@@ -300,8 +302,8 @@ function verificarGanador(misMinas,minasContrario){
 				pierde:perdedor
 			}
 			socket.emit("ganador",jugadorGanador);
-			alert("El jugador " + ganador + " ha ganado")
-			deshabilitarCasillas()
+			deshabilitarCasillas();
+			anunciarGanador(ganador);
 		}	
 	}
 	
@@ -310,4 +312,12 @@ function verificarGanador(misMinas,minasContrario){
 
 document.getElementById("salir").onclick = function(){
 	window.location = "/protected"
+}
+
+function anunciarGanador(ganador){
+	document.getElementById("anuncioGanador").innerHTML = "<p>" + ganador + "</p>"
+	document.getElementById("anuncioGanador").style.display="block";
+	setTimeout(function(){
+		document.getElementById("anuncioGanador").style.display="none";
+	},2000);
 }

@@ -18,6 +18,7 @@ socket.on('connected',function(info){
 	}
 });
 
+
 socket.on('usersConnected', function(sockets){
 	users = sockets;
 	for (var key in sockets) {
@@ -25,9 +26,11 @@ socket.on('usersConnected', function(sockets){
 			if(sockets[key] == mySocket){
 				myUser = key
 				console.log("mi usuario es: " + myUser)
+				sessionStorage.setItem('user',myUser)
 				var usuario = {
-					user : sessionStorage.setItem('user',myUser)
+					user : myUser
 				}
+				//socket.emit('obtenerPerfil',usuario)
 			}
 		}	
 	}
@@ -112,7 +115,7 @@ function preguntar(idDiv){
 	
 }
 
-
+//socket.emit("solicitudRanking")
 /*for(var i=0; i<Object.keys.length;i++){
 			if(key != myUser){
 				console.log("Key: " + key);
@@ -121,3 +124,4 @@ function preguntar(idDiv){
 			
 		}
 */
+

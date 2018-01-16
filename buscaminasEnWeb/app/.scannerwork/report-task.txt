@@ -1,0 +1,6 @@
+projectKey=my:projectJS
+serverUrl=http://localhost:9000
+serverVersion=6.7.0.33306
+dashboardUrl=http://localhost:9000/dashboard/index/my:projectJS
+ceTaskId=AWD9dE1RtC8DXkPtEo6B
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AWD9dE1RtC8DXkPtEo6B

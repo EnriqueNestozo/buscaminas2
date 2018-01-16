@@ -12,62 +12,7 @@ import random
 sesiones = []
 
 listaConectados = OrderedDict()
-"""
-@app.route('/protected')
-@login_required
-def protected():
-	print('en protected')
-	if myId in sesiones:
-		print("usuario paso")
-		return render_template('protected.html')
-	else:
-		print("usuario no permitido")
 
-
-@app.before_request
-def before_request():
-	g.user = None
-	if 'user' in sesiones:
-		g.user = sesiones['user']
-
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            return redirect(url_for('home', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
-
-@socketio.on('requestPage')
-def requestPage():
-		destination = '/protected.html'
-		socketio.emit('redirectToPrincipal',{'url':'/protected'})
-
-@app.route('/')
-def home():
-	return render_template('home.html')
-
-@socketio.on('connect')
-def connect():
-    print("usuario conectado"+ request.sid)
-
-@socketio.on('disconnect')
-def disconnect():
-	print('usuario desconectado')
-
-@socketio.on('verificacionUsuario')
-def verificacion(usuario):
-	nuevoUsuario = Usuario(usuario['nombre'], usuario['contrasena'],"")
-	if comprobarUsuario(nuevoUsuario):
-		print("usuario verificado " + usuario['nombre'])
-		sesiones.append(usuario['nombre'])
-		g.user = usuario['nombre']
-		socketio.emit('respuestaVerificacion', { 're':'True', 'id':usuario['nombre']})
-	else:
-		socketio.emit('respuestaVerificacion', {'re':'Nombre de usuario y/o contraseña inválido'})
-
-"""
 @socketio.on('connect')
 def connect():
 	print("conectado: " + request.sid)
@@ -87,13 +32,7 @@ def ready(usuario):
 		listaConectados.update({usuario['user'] : request.sid})
 		print(listaConectados)
 		socketio.emit('connected',{'idSocket': request.sid})
-		socketio.emit('usersConnected',listaConectados)	
-	
-    
-##creo que no se usa
-@socketio.on('requestUsersConnected')
-def usersConnected():
-	socketio.emit('usersConnected',listaConectados)
+		socketio.emit('usersConnected',listaConectados)
     
 
 @socketio.on('disconnect')
@@ -114,18 +53,6 @@ def message(data):
 			socketio.emit('solicitudDePartida',{'mensaje':'El jugador ' + data['enviador'] + ' desea comenzar una partida con usted', 'player1':data['enviador']}, room=data['receptor'])
 
 
-"""
-@socketio.on('sesion')
-def sesion():
-	listaDeSesiones = ' '.join(map(str, sesiones))
-	print(listaDeSesiones)
-	socketio.emit('respuestaSesion', {'re': listaDeSesiones})
-
-
-
-
-"""
-
 @socketio.on('respuesta')
 def respuesta(res):
 	for name,socketid in listaConectados.items():
@@ -134,7 +61,7 @@ def respuesta(res):
 
 
 @socketio.on('redirectToGame')
-def redirectToGame(partida):
+def redirect_to_game(partida):
 	print("redireccionando")
 	socketio.emit('partidaAceptada',partida,room=partida['jugador1'])
 
@@ -177,33 +104,21 @@ def ganador(data):
 		print(actualizar(data['pierde'],False))
 
 @socketio.on('mensajeDesdeRoom')
-def mensajeDesdeRoom(data):
+def mensaje_desde_room(data):
 	socketio.emit("respuestaRoom",{'menssage':data['mensaje']}, room=data['room'])
 
 @socketio.on('solicitarTablero')
-def solicitarTablero(data):
-	socketio.emit("tableroGenerado",{'tablero': generarTablero()},room=data['room'])
+def solicitar_tablero(data):
+	socketio.emit("tableroGenerado",{'tablero': generar_tablero()},room=data['room'])
 
 
 @socketio.on('tiro')
 def tiro(data):
 	socketio.emit("envioDeTiro",{'casilla':data['casilla'],'user':data['user']},broadcast=True,room=data['room'],include_self=False)
 
-"""
-turno = False
-@socketio.on('preguntarTurno')
-def turno(data):
-	global turno
-	print("turno: "+turno)
-	if turno:
-		turnoDe = 1
-	else:
-		turnoDe = 2
-	emit('respuestaTurno',{'turno': turnoDe},room=data['room'], callback=)
-	turno = not turno
-"""
+
 @socketio.on("cambiarTurno")
-def cambiarTurno(data):
+def cambiar_turno(data):
 	turno = 0
 	if data['turnoActual'] == "1":
 		turno = 2
@@ -212,23 +127,23 @@ def cambiarTurno(data):
 	socketio.emit('respuestaTurno',{'turno':turno},room=data['room'])
 
 @socketio.on('enviarMiUsuario')
-def enviarMiUsuario(data):
+def enviar_mi_usuario(data):
 	socketio.emit('recibirUsuario',{'usuario':data['username']},broadcast=True,room=data['room'], include_self=False)
 
 @socketio.on('solicitudRanking')
-def solicitudRanking():
+def solicitud_de_ranking():
 	lista = []
 	lista = obtenerMejoresJugadores()
 	print (lista)
 
-def generarTablero():
+def generar_tablero():
 	tablero = [[0] * 10 for i in range(10)]
-	tablero = asignarMinas(tablero)
-	tablero = asignarNumeros(tablero)
+	tablero = asignar_minas(tablero)
+	tablero = asignar_numeros(tablero)
 	return tablero
 
 
-def asignarMinas(tablero):
+def asignar_minas(tablero):
 	minas = 21
 	for i in range(minas):
 		is_bomb = False
@@ -240,68 +155,64 @@ def asignarMinas(tablero):
 				is_bomb = True
 	return tablero
 
-def asignarNumeros(tablero):
+def asignar_numeros(tablero):
 	for x in range(len(tablero)):
 		for y in range(len(tablero[x])):
 			if tablero[x][y] == 9:
-				tablero = verificarAbajoIzquierda(tablero, x, y)
-				tablero = verificarAbajo(tablero,x,y)
-				tablero = verificarAbajoDerecha(tablero,x,y)
-				tablero = verificarArribaIzquierda(tablero,x,y)
-				tablero = verificarArriba(tablero,x,y)
-				tablero = verificarArribaDerecha(tablero,x,y)
-				tablero = verificarIzquierda(tablero,x,y)
-				tablero = verificarDerecha(tablero,x,y)
+				tablero = verificar_abajo_izquierda(tablero, x, y)
+				tablero = verificar_abajo(tablero,x,y)
+				tablero = verificar_abajo_derecha(tablero,x,y)
+				tablero = verificar_arriba_izquierda(tablero,x,y)
+				tablero = verificar_arriba(tablero,x,y)
+				tablero = verificar_arriba_derecha(tablero,x,y)
+				tablero = verificar_izquierda(tablero,x,y)
+				tablero = verificar_derecha(tablero,x,y)
 	return tablero
 
-def verificarAbajoIzquierda(tablero,x,y):
-	if x + 1 < len(tablero[x]) and y - 1 >= 0:
-		if tablero[x+1][y-1] != 9:
-			tablero[x+1][y-1] +=1
+def verificar_abajo_izquierda(tablero,x,y):
+	if x + 1 < len(tablero[x]) and y - 1 >= 0 and tablero[x+1][y-1] != 9:
+		tablero[x+1][y-1] +=1
 	return tablero
 
-def verificarAbajo(tablero,x,y):
-	if x + 1 < len(tablero[0]):
-		if tablero[x+1][y] != 9:
-			tablero[x+1][y] +=1
+def verificar_abajo(tablero,x,y):
+	if x + 1 < len(tablero[0]) and tablero[x+1][y] !=9:
+		tablero[x+1][y] +=1
 	return tablero
 
-def verificarAbajoDerecha(tablero,x,y):
-	if x + 1 < len(tablero[0]) and y + 1 < len(tablero):
-		if tablero[x+1][y+1] != 9:
-			tablero[x+1][y+1] +=1
+def verificar_abajo_derecha(tablero,x,y):
+	if x + 1 < len(tablero[0]) and y + 1 < len(tablero) and tablero[x+1][y+1] != 9:
+		tablero[x+1][y+1] +=1
 	return tablero
 
-def verificarArribaIzquierda(tablero,x,y):
-	if x -1 >=0 and y - 1 >=0:
-		if tablero[x-1][y-1] != 9:
-			tablero[x-1][y-1] +=1
+def verificar_arriba_izquierda(tablero,x,y):
+	if x -1 >=0 and y - 1 >=0 and tablero[x-1][y-1] != 9:
+		tablero[x-1][y-1] +=1
 	return tablero
 
-def verificarArriba(tablero,x,y):
-	if x - 1 >=0:
-		if tablero[x-1][y] != 9:
-			tablero[x-1][y] +=1
+def verificar_arriba(tablero,x,y):
+	if x - 1 >=0 and tablero[x-1][y] != 9:
+		tablero[x-1][y] +=1
 	return tablero
 
-def verificarArribaDerecha(tablero,x,y):
-	if x - 1 >=0 and y + 1 < len(tablero):
-		if tablero[x-1][y+1] != 9:
-			tablero[x-1][y+1] +=1
+def verificar_arriba_derecha(tablero,x,y):
+	if x - 1 >=0 and y + 1 < len(tablero) and tablero[x-1][y+1] != 9:
+		tablero[x-1][y+1] +=1
 	return tablero
 
-def verificarIzquierda(tablero,x,y):
-	if y - 1 >=0:
-		if tablero[x][y-1] != 9:
-			tablero[x][y-1] +=1
+def verificar_izquierda(tablero,x,y):
+	if y - 1 >=0 and tablero[x][y-1] != 9:
+		tablero[x][y-1] +=1
 	return tablero
 
-def verificarDerecha(tablero,x,y):
-	if y + 1 < len(tablero):
-		if tablero[x][y+1] != 9:
-			tablero[x][y+1] +=1
+def verificar_derecha(tablero,x,y):
+	if y + 1 < len(tablero) and tablero[x][y+1] != 9:
+		tablero[x][y+1] +=1
 	return tablero
 
+@socketio.on('obtenerPerfil')
+def obtener_perfil(data):
+	user = (obtenerPerfilUsuario(data['user']))
+	print(user)
 
 
 app.secret_key = os.urandom(24)
@@ -344,21 +255,17 @@ def home():
 		return render_template('home.html')
 	elif request.method == 'POST':
 		session.pop('user', None)
-		nuevoUsuario = Usuario(request.form['usuario'], request.form['password'],"")
-		if comprobarUsuario(nuevoUsuario):
+		nuevo_usuario = Usuario(request.form['usuario'], request.form['password'],"")
+		if comprobarUsuario(nuevo_usuario):
 			session['user'] = request.form['usuario']
 			sesiones.append(request.form['usuario'])
 			return redirect(url_for('protected'))
 		else:
 			error = 'Invalid username or password. Please try again!'
 			return render_template('home.html', error=error)
-	        #if 'user already exist in database':
-	        #    return "user authenticated"
-	        #else:
-	        #	return "user invalid"
         
 @app.route('/signUp', methods=['GET', 'POST'])
-def signUp():
+def sign_up():
 	error = None
 	if request.method == "GET":
 		return render_template('signUp.html')
@@ -368,8 +275,8 @@ def signUp():
 				error="Ese usuario ya existe, porfavor elija otro nombre"
 				return render_template('signUp.html', error=error)
 			else:
-				nuevoUsuario = Usuario(request.form['usuario'],request.form['password'],request.form['email'])
-				crearUsuario(nuevoUsuario)
+				nuevo_usuario = Usuario(request.form['usuario'],request.form['password'],request.form['email'])
+				crearUsuario(nuevo_usuario)
 				error = "usuario creado exitosamente"
 				return render_template('signUp.html', error=error)
 		else:

@@ -16,37 +16,48 @@
 			<h1 id="titulo" align="center" style="padding-top: 1em">BUSCAMINAS</h1>
 			<h5 id="sub" align="center" style="padding-bottom: 4.5em">ONLINE</h5>
 			<ul class="nav nav-pills mb-3 flex-column" id="pills-tab" role="tablist">
-			  <li class="nav-item">
-			    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Jugadores</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Ranking</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Perfil</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Configuración</a>
-			  </li>
-			  <li class="nav-item">
-			    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Cerrar sesión</a>
-			  </li>
+				<li class="nav-item">
+					<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#conectados" role="tab" aria-controls="conectados" aria-selected="true">Jugadores</a>
+				</li>
+					<li class="nav-item">
+				    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#ranking" role="tab" aria-controls="ranking" aria-selected="false">Ranking</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#perfil" role="tab" aria-controls="perfil" aria-selected="false">Perfil</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#configuracion" role="tab" aria-controls="configuracion" aria-selected="false">Configuración</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#salir" role="tab" aria-controls="salir" aria-selected="false">Salir</a>
+				</li>
 			</ul>
 			
 		</div>
-		<div class="col-sm-8" style="background-color: #BDBDBD">
-			<div id="conectados">
-
-			</div>
-			<div id="Ranking">
-				
-			</div>
-			<div id="Perfil">
-				
-			</div>
-			<div id="configuracion">
-				
-			</div>
+		
+		<div class="tab-content col-sm-8" id="pills-tabContent" style="background-color: #BDBDBD">
+     		<div class="tab-pane fade show active" id="conectados" role="tabpanel" aria-labelledby="pills-home-tab">
+     			
+     		</div>
+	    	<div class="tab-pane fade" id="ranking" role="tabpanel" aria-labelledby="pills-profile-tab">
+	    		<table style="width:100%">
+	    			<tr>
+						<th>Partidas ganadas</th>
+					    <th>Nombre de usuario</th>
+					</tr>
+					
+	    		</table>
+	    		
+	    	</div>
+	  		<div class="tab-pane fade" id="perfil" role="tabpanel" aria-labelledby="pills-contact-tab">
+	  			
+	  		</div>
+	  		<div class="tab-pane fade" id="configuracion" role="tabpanel" aria-labelledby="pills-configuracion-tab">
+	  			
+	  		</div>
+	  		<div class="tab-pane fade" id="salir" role="tabpanel" aria-labelledby="pills-salir-tab">
+	  			
+	  		</div>
 		</div>
 	</div>
 
@@ -61,3 +72,5 @@
 </body>
 
 </html>
+
+
